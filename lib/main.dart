@@ -7,6 +7,7 @@ void main() {
 }
 
 class Simventory extends StatelessWidget {
+  final Data data = new Data();
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -51,10 +52,10 @@ class _BuildListState extends State<BuildList> {
 class Upgrades extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    OngoingUpgradesList ongoingUpgradesList = new OngoingUpgradesList();
-    if (ongoingUpgradesList.ongoingUpgrades.length != 0) {
+    // ignore: dead_code
+    if (false) {
       return ListView.builder(
-        itemCount: ongoingUpgradesList.ongoingUpgrades.length,
+        itemCount: 0,
         itemBuilder: (context, index) {
           return Card(
             child: Container(
@@ -63,7 +64,7 @@ class Upgrades extends StatelessWidget {
               width: MediaQuery.of(context).size.width,
               color: Colors.white12,
               child: Center(
-                child: Text(ongoingUpgradesList.ongoingUpgrades[index]),
+                child: Text(''),
               ),
               // child: Row(
               //   children: [
