@@ -50,8 +50,8 @@ class Materials {
 
   Materials();
 
+  int upgradeSerial;
   int itemListCount(index) => _itemList[index].count;
-
   void incrementCount(index) {
     // ignore: unnecessary_statements
     _itemList[index].count >= 0 ? _itemList[index].count += 1 : null;
@@ -72,15 +72,25 @@ class Materials {
 }
 
 class MaterialList {
-  List<Materials> materialList = [Materials()];
+  int _upgradeCount = 0;
+  static List<Materials> _materialList = [];
 
   List<Materials> getAllMaterialList() {
-    return materialList;
+    return _materialList;
   }
 
+  int upgradeCount() => _upgradeCount;
+  var currentUpgrade;
   void newUpgrade() {
-    materialList.add(Materials());
-    print(materialList.length);
+    currentUpgrade = new Materials();
+    currentUpgrade.upgradeSerial = _upgradeCount;
+    _materialList.add(currentUpgrade);
+    print(_materialList.length);
+    _upgradeCount++;
+  }
+
+  void addUpgrade() {
+    currentUpgrade = null;
   }
 }
 
@@ -102,8 +112,8 @@ class MaterialList {
 // }
 
 class Data {
-  final Materials items = new Materials();
-  final MaterialList upgrade = new MaterialList();
+  static Materials items = new Materials();
+  static MaterialList upgrade = new MaterialList();
 
   Data();
 }

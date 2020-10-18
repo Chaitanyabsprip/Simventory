@@ -3,11 +3,19 @@ import 'coda/items.dart';
 import 'addupgrade.dart';
 
 void main() {
-  runApp(MaterialApp(title: 'Simventory', home: Simventory()));
+  runApp(
+    MaterialApp(
+      title: 'Simventory',
+      initialRoute: '/',
+      routes: {
+        '/': (context) => Simventory(),
+        '/addupgrade': (context) => AddUpgrade()
+      },
+    ),
+  );
 }
 
 class Simventory extends StatelessWidget {
-  final Data data = new Data();
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -16,47 +24,41 @@ class Simventory extends StatelessWidget {
           child: Text('Simventory'),
         ),
       ),
-      body: BuildList(),
+      body: Upgrades(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => AddUpgrade()),
-          );
-        },
-        tooltip: 'Add new building upgrade',
-        icon: Icon(Icons.add),
-        label: Text('New Upgrade'),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: FloatingActionButton.extended(
+          onPressed: () {
+            Data.upgrade.newUpgrade();
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => AddUpgrade()),
+            );
+          },
+          tooltip: 'Add new building upgrade',
+          icon: Icon(Icons.add),
+          label: Text('New'),
+        ),
       ),
     );
   }
 }
 
-class BuildList extends StatefulWidget {
-  BuildList({Key key}) : super(key: key);
-
+class Upgrades extends StatefulWidget {
   @override
-  _BuildListState createState() => _BuildListState();
+  _UpgradesState createState() => _UpgradesState();
 }
 
-class _BuildListState extends State<BuildList> {
+class _UpgradesState extends State<Upgrades> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Upgrades(),
-    );
-  }
-}
-
-class Upgrades extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
+    // print(Data.upgrade.getAllMaterialList().length > 0);
     // ignore: dead_code
-    if (false) {
+    if (Data.upgrade.getAllMaterialList().length > 0) {
       return ListView.builder(
-        itemCount: 0,
-        itemBuilder: (context, index) {
+        itemCount: Data.upgrade.getAllMaterialList().length,
+        itemBuilder: (context, i) {
           return Card(
             child: Container(
               padding: EdgeInsets.all(1.0),
@@ -64,7 +66,16 @@ class Upgrades extends StatelessWidget {
               width: MediaQuery.of(context).size.width,
               color: Colors.white12,
               child: Center(
-                child: Text(''),
+                child: FlatButton(
+                  onPressed: () => () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Page(i)));
+                  },
+                  child: Text(Data.upgrade
+                      .getAllMaterialList()[i]
+                      .upgradeSerial
+                      .toString()),
+                ),
               ),
               // child: Row(
               //   children: [
@@ -81,6 +92,7 @@ class Upgrades extends StatelessWidget {
         },
       );
     } else {
+      print('executing');
       return Container(
         height: 100,
         padding: EdgeInsets.all(15),
@@ -92,5 +104,28 @@ class Upgrades extends StatelessWidget {
         ),
       );
     }
+  }
+}
+
+class Page extends StatelessWidget {
+  final int i;
+  Page(this.i);
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: const Center(
+            child: Text('Simventory'),
+          ),
+        ),
+        body: ListView.builder(
+          itemBuilder: (context, j) {
+            return (Text(Data.upgrade
+                .getAllMaterialList()[i]
+                .getList()[j]
+                .name
+                .toString()));
+          },
+        ));
   }
 }

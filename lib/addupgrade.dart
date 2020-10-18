@@ -4,7 +4,6 @@ import 'coda/items.dart';
 class AddUpgrade extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Data data = new Data();
     return Scaffold(
       appBar: AppBar(
         title: Center(
@@ -31,7 +30,7 @@ class AddUpgrade extends StatelessWidget {
             padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 32.0),
             height: 550.0,
             child: ListView.builder(
-              itemCount: data.items.getList().length,
+              itemCount: Data.items.getList().length,
               itemBuilder: (context, index) {
                 return Padding(
                   padding: const EdgeInsets.fromLTRB(0, 8.0, 0, 8.0),
@@ -51,7 +50,7 @@ class AddUpgrade extends StatelessWidget {
                           margin: EdgeInsets.fromLTRB(2.0, 0.0, 2.0, 0.0),
                           child: Center(
                             child: Text(
-                              data.items.getList()[index].name,
+                              Data.items.getList()[index].name,
                               softWrap: true,
                               textAlign: TextAlign.center,
                             ),
@@ -74,8 +73,14 @@ class AddUpgrade extends StatelessWidget {
       floatingActionButton: Padding(
         padding: const EdgeInsets.all(8.0),
         child: FloatingActionButton.extended(
-          label: Text('Add Upgrade'),
-          onPressed: () {},
+          label: Text('Add'),
+          onPressed: () {
+            print(Data.upgrade.getAllMaterialList());
+            Navigator.pop(context);
+            Navigator.pop(context);
+            Navigator.pushNamed(context, '/');
+            Data.upgrade.addUpgrade();
+          },
           icon: Icon(Icons.add),
           tooltip: 'Add new building upgrade',
         ),
@@ -107,7 +112,9 @@ class _ItemCountState extends State<ItemCount> {
               color: Colors.blue,
               child: Icon(Icons.remove),
               onPressed: () {
-                data.upgrade.getAllMaterialList()[0].decrementCount(index);
+                Data.upgrade
+                    .getAllMaterialList()[Data.upgrade.upgradeCount()]
+                    .decrementCount(index);
                 // data.upgrade
                 //     .removeItem(data.upgrade.materials.getList()[index]);
                 setState(() {});
@@ -121,7 +128,7 @@ class _ItemCountState extends State<ItemCount> {
           height: 30,
           width: 60,
           child: Center(
-            child: Text(data.upgrade
+            child: Text(Data.upgrade
                 .getAllMaterialList()[0]
                 .itemListCount(index)
                 .toString()),
@@ -135,7 +142,9 @@ class _ItemCountState extends State<ItemCount> {
               color: Colors.blue,
               child: Icon(Icons.add),
               onPressed: () {
-                data.upgrade.getAllMaterialList()[0].incrementCount(index);
+                Data.upgrade
+                    .getAllMaterialList()[Data.upgrade.upgradeCount()]
+                    .incrementCount(index);
                 setState(() {});
               },
             ),
