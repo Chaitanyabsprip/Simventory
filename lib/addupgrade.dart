@@ -128,10 +128,7 @@ class _ItemCountState extends State<ItemCount> {
           height: 30,
           width: 60,
           child: Center(
-            child: Text(Data.upgrade
-                .getAllMaterialList()[0]
-                .itemListCount(index)
-                .toString()),
+            child: Text(Data.string),
           ),
         ),
         Container(
