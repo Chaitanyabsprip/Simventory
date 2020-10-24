@@ -18,7 +18,7 @@ class AddUpgrade extends StatelessWidget {
           Container(
             height: 120,
             padding:
-                EdgeInsets.fromLTRB(8.0, 0, 16.0, 0), //TODO add stateful child
+                EdgeInsets.fromLTRB(8.0, 0, 16.0, 0),   //TODO: add stateful child
           ),
           Container(
             margin: const EdgeInsets.fromLTRB(0, 0, 0, 8.0),
