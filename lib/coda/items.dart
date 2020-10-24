@@ -43,7 +43,6 @@ class DerivedItems extends Item {
   DerivedItems();
 
   DerivedItems.add(Map itemInfo) {
-    Item.add(itemInfo);
     super.name = itemInfo["name"];
     this.materialsReqd = itemInfo['materialsReqd'];
   }
