@@ -11,8 +11,15 @@ void main() {
 class Simventory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => BuildingPlanBook(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<BuildingPlanBook>(
+          create: (context) => BuildingPlanBook(),
+        ),
+        ChangeNotifierProvider<BuildingPlan>(
+          create: (context) => BuildingPlan(),
+        ),
+      ],
       child: new MaterialApp(
         title: 'Simventory',
         theme: ThemeData(
@@ -21,8 +28,8 @@ class Simventory extends StatelessWidget {
         ),
         initialRoute: '/',
         routes: {
-          '/': (_) => Home(),
-          '/newBuildingPlan': (_) => NewBuildingPlan(),
+          '/': (context) => Home(),
+          '/newBuildingPlan': (context) => NewBuildingPlan(),
         },
       ),
     );

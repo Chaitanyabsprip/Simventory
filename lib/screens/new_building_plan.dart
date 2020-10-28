@@ -8,14 +8,15 @@ class NewBuildingPlan extends StatelessWidget {
   Widget build(BuildContext context) {
     // provider variables
 
-    final itemProvider = Provider.of<DerivedItem>(context);
     final planProvider = Provider.of<BuildingPlan>(context);
+    debugPrint(planProvider.name);
+
     return Scaffold(
       appBar: AppBar(title: const Text("New Building Plan")),
       floatingActionButton: FloatingActionButton.extended(
         label: const Text("Done"),
         onPressed: () {
-          Navigator.of(context).pop(planProvider);
+          Navigator.pop(context, planProvider);
         },
       ),
       body: Padding(
@@ -24,13 +25,17 @@ class NewBuildingPlan extends StatelessWidget {
           children: <Widget>[
             Expanded(
               flex: 2,
-              child: AddedItemList(),
+              child: Container(),
             ),
             Expanded(
               flex: 5,
               child: ListView.builder(
                 itemCount: Info.itemList.length,
                 itemBuilder: (BuildContext context, int index) {
+                  // Making an object of <Item> DerivedItems for each listView Item but adding it to ingredients list only when add button is pressed.
+
+                  Item item = new DerivedItem(Info.namesList[index]);
+
                   return Container(
                     width: MediaQuery.of(context).size.width,
                     padding: const EdgeInsets.symmetric(vertical: 8),
@@ -50,7 +55,7 @@ class NewBuildingPlan extends StatelessWidget {
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 24.0),
                             child: Text(
-                              Info.namesList[index],
+                              item.name,
                               style: TextStyle(fontSize: 18),
                             ),
                           ),
@@ -65,19 +70,15 @@ class NewBuildingPlan extends StatelessWidget {
                                   icon: Icon(Icons.remove),
                                   label: Text(""),
                                   onPressed: () {
-                                    planProvider
-                                        .removeItem(Info.namesList[index]);
+                                    planProvider.removeItem(item.name);
                                   },
                                 ),
                               ),
                               Expanded(
                                 flex: 1,
                                 child: Text(
-                                  (planProvider.ingredients
-                                          .containsKey(Info.namesList[index]))
-                                      ? planProvider
-                                          .ingredients[Info.namesList[index]]
-                                          .count
+                                  (planProvider.ingredients.contains(item))
+                                      ? planProvider.ingredients[index].count
                                           .toString()
                                       : "0",
                                   textAlign: TextAlign.center,
@@ -88,9 +89,7 @@ class NewBuildingPlan extends StatelessWidget {
                                 child: FlatButton.icon(
                                   icon: Icon(Icons.add),
                                   label: Text(""),
-                                  onPressed: () => planProvider.addItem(
-                                    Item.add(Info.namesList[index]),
-                                  ),
+                                  onPressed: () => planProvider.addItem(item),
                                 ),
                               ),
                             ],
@@ -105,24 +104,6 @@ class NewBuildingPlan extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class AddedItemList extends StatefulWidget {
-  @override
-  _AddedItemListState createState() => _AddedItemListState();
-}
-
-class _AddedItemListState extends State<AddedItemList> {
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      scrollDirection: Axis.horizontal,
-      itemCount: 50,
-      itemBuilder: (BuildContext context, int index) {
-        return null; // TODO: add a stateful widget to show items that have been added and their count.
-      },
     );
   }
 }

@@ -7,7 +7,7 @@ class BuildingPlan with ChangeNotifier {
   static int id = 0;
   int uid;
   String name;
-  Map<String, Item> ingredients = {};
+  List<Item> ingredients = [];
 
   /* int numberOfItems;
   int totalNumberOfItems; */
@@ -21,19 +21,22 @@ class BuildingPlan with ChangeNotifier {
   //methods
 
   void addItem(Item item) {
-    if (ingredients.containsKey(item.name)) {
-      ingredients[item.name].incrementCount();
-    } else {
-      ingredients[item.name] = item;
+    if (!ingredients.contains(item)) {
+      ingredients.add(item);
     }
+    item.incrementCount();
     notifyListeners();
   }
 
   void removeItem(String itemName) {
-    if (ingredients.containsKey(itemName) && ingredients[itemName].count > 0) {
-      ingredients[itemName].decrementCount();
+    Item item;
+    for (var i in ingredients) {
+      if (itemName == i.name) item = i;
+    }
+    if (ingredients.contains(item) && item.count > 0) {
+      item.decrementCount();
 
-      if (ingredients[itemName].count == 0) {
+      if (item.count == 1) {
         ingredients.remove(itemName);
       }
     }
@@ -43,7 +46,7 @@ class BuildingPlan with ChangeNotifier {
 
 class BuildingPlanBook with ChangeNotifier {
   BuildingPlan buildingPlan;
-  Map<String, BuildingPlan> plans = {};
+  Map<String, BuildingPlan> book = {};
   Map recipeType = Map.unmodifiable(
     {
       1: "Building",
@@ -68,13 +71,13 @@ class BuildingPlanBook with ChangeNotifier {
     /* if (buildingPlanName == "") {
       _buildingPlan.name = buildingPlanName;
     } */
-    plans[plan.name] = plan;
+    book[plan.name] = plan;
     notifyListeners();
   }
 
   void removeBuildingPlan(String name) {
-    if (plans.containsKey(name)) {
-      plans.remove(name);
+    if (book.containsKey(name)) {
+      book.remove(name);
     }
     notifyListeners();
   }
