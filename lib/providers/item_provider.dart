@@ -12,6 +12,8 @@ class Info {
       "Textiles": {"time": 180},
       "Sugar and Spices": {"time": 240},
       "Glass": {"time": 300},
+      "Animal Feed": {"time": 360},
+      "Electrical Components": {"time": 420},
     },
   );
 
@@ -34,20 +36,27 @@ class Item {
   Item.add(String name) {
     this.name = name;
     this.time = Info.itemList[name]["time"];
-    this.count = 1;
+    this.count = 0;
   }
 
   //methods
 
   void incrementCount() {
-    count++;
+    this.count++;
   }
 
   void decrementCount() {
-    count++;
+    this.count++;
   }
 
-  String toString() => "{'$name', $count, ${count * time}}";
+  @override
+  bool operator ==(Object other) => other is Item && name == other.name;
+
+  @override
+  int get hashCode => name.hashCode;
+
+  @override
+  String toString() => "($name, $count, $time)";
 }
 
 class DerivedItem extends Item with ChangeNotifier {
@@ -62,12 +71,12 @@ class DerivedItem extends Item with ChangeNotifier {
   }
 
   void incrementCount() {
-    count++;
+    this.count++;
     notifyListeners();
   }
 
   void decrementCount() {
-    count--;
+    this.count--;
     notifyListeners();
   }
 }

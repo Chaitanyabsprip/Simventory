@@ -2,49 +2,62 @@ import 'package:flutter/Material.dart';
 import 'item_provider.dart';
 
 class BuildingPlan with ChangeNotifier {
-  //fields
-
-  static int id = 0;
-  int uid;
-  String name;
-  List<Item> ingredients = [];
-
-  /* int numberOfItems;
-  int totalNumberOfItems; */
-
   BuildingPlan() {
     id++;
     uid = id;
     name = "Building Plan #$uid";
   }
 
+  //fields
+
+  String name;
+  int uid;
+  static int id = 0;
+  Map<String, Item> ingredients = {};
+
   //methods
 
   void addItem(Item item) {
-    if (!ingredients.contains(item)) {
-      ingredients.add(item);
+    if (!ingredients.containsValue(item)) {
+      ingredients[item.name] = item;
     }
-    item.incrementCount();
+    ingredients[item.name].incrementCount();
     notifyListeners();
   }
 
   void removeItem(String itemName) {
-    Item item;
-    for (var i in ingredients) {
-      if (itemName == i.name) item = i;
-    }
-    if (ingredients.contains(item) && item.count > 0) {
+    Item item = ingredients[itemName];
+    if (ingredients.containsKey(itemName)) {
       item.decrementCount();
-
-      if (item.count == 1) {
-        ingredients.remove(itemName);
-      }
+      if (ingredients[itemName].count <= 0) ingredients.remove(itemName);
     }
     notifyListeners();
   }
+
+  void changeNameTo(String newName) {
+    name = newName;
+    notifyListeners();
+  }
+
+  void notify() => notifyListeners();
+
+  int totalTime() {
+    int totalTime;
+    for (var item in ingredients.entries) {
+      totalTime += item.value.time;
+    }
+    return totalTime;
+  }
+
+  @override
+  String toString() => "$name: ${ingredients.values.toList()}";
 }
 
-class BuildingPlanBook with ChangeNotifier {
+class BuildingPlanBook extends ChangeNotifier {
+  BuildingPlanBook();
+
+  //fields
+
   BuildingPlan buildingPlan;
   Map<String, BuildingPlan> book = {};
   Map recipeType = Map.unmodifiable(
@@ -60,22 +73,14 @@ class BuildingPlanBook with ChangeNotifier {
     }, //*not happy with this strucuture
   );
 
-  BuildingPlanBook();
-
-  void newBuildingPlan() {
-    buildingPlan = new BuildingPlan();
-    notifyListeners();
-  }
+  //methods
 
   void addPlan(BuildingPlan plan) {
-    /* if (buildingPlanName == "") {
-      _buildingPlan.name = buildingPlanName;
-    } */
     book[plan.name] = plan;
     notifyListeners();
   }
 
-  void removeBuildingPlan(String name) {
+  void removePlan(String name) {
     if (book.containsKey(name)) {
       book.remove(name);
     }
