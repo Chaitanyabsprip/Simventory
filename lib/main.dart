@@ -19,9 +19,12 @@ class Simventory extends StatelessWidget {
       child: MaterialApp(
         title: 'Simventory',
         theme: ThemeData(
-          primarySwatch: Colors.deepPurple,
-          accentColor: Colors.deepOrange,
-        ),
+            primaryColor: Color.fromRGBO(1, 76, 131, 1),
+            scaffoldBackgroundColor: Color(0xFBFEFBFF),
+            accentColor: Color(0xFF54DAF7),
+            textTheme: TextTheme(
+                headline6:
+                    TextStyle(fontSize: 20, fontWeight: FontWeight.w400))),
         home: Home(),
       ),
     );

@@ -15,6 +15,24 @@ class BuildingPlan with ChangeNotifier {
   static int id = 0;
   Map<String, Item> ingredients = {};
 
+  //getters
+
+  int get numberOfItems {
+    int totalCount = 0;
+    for (var item in ingredients.values) {
+      totalCount += item.count;
+    }
+    return totalCount;
+  }
+
+  int get totalTimeTaken {
+    int totalTime = 0;
+    for (var item in ingredients.values) {
+      totalTime += item.time;
+    }
+    return totalTime;
+  }
+
   //methods
 
   void addItem(Item item) {
@@ -22,6 +40,7 @@ class BuildingPlan with ChangeNotifier {
       ingredients[item.name] = item;
     }
     ingredients[item.name].incrementCount();
+    _sortIngredients();
     notifyListeners();
   }
 
@@ -39,15 +58,22 @@ class BuildingPlan with ChangeNotifier {
     notifyListeners();
   }
 
-  void notify() => notifyListeners();
-
-  int totalTime() {
-    int totalTime;
-    for (var item in ingredients.entries) {
-      totalTime += item.value.time;
+  void _sortIngredients() {
+    Map<int, Item> timeToItem = {};
+    List<int> sortedList;
+    Map<String, Item> temp = {};
+    for (var item in ingredients.values) {
+      timeToItem[item.time] = item;
     }
-    return totalTime;
+    sortedList = timeToItem.keys.toList();
+    sortedList.sort();
+    for (var i in sortedList) {
+      temp[timeToItem[i].name] = ingredients[timeToItem[i].name];
+    }
+    ingredients = temp;
   }
+
+  void notify() => notifyListeners();
 
   @override
   String toString() => "$name: ${ingredients.values.toList()}";

@@ -26,8 +26,7 @@ class Item {
   //fields
 
   String name;
-  int count;
-  int time;
+  int count = 0;
 
   //constructors
 
@@ -35,9 +34,12 @@ class Item {
 
   Item.add(String name) {
     this.name = name;
-    this.time = Info.itemList[name]["time"];
     this.count = 0;
   }
+
+  //getters
+
+  int get time => Info.itemList[name]["time"];
 
   //methods
 
@@ -65,10 +67,11 @@ class DerivedItem extends Item with ChangeNotifier {
 
   DerivedItem(String name) {
     super.name = name;
-    super.time = Info.itemList[name]["time"];
     super.count = 0;
     this._materialsRequired = Info.itemList[name]["materialsRequired"];
   }
+
+  int get time => Info.itemList[name]["time"];
 
   void incrementCount() {
     this.count++;

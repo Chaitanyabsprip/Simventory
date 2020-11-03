@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
 
-import 'building_plans_provider.dart';
-
 class ExpansionPanelState extends ChangeNotifier {
   ExpansionPanelState({
     this.expandedValue,
@@ -10,10 +8,11 @@ class ExpansionPanelState extends ChangeNotifier {
 
   String expandedValue;
   String headerValue;
-  bool isExpanded;
+  bool isExpanded = false;
 
   void updateExpansionState() {
     isExpanded = !isExpanded;
+    print(isExpanded);
     notifyListeners();
   }
 }
