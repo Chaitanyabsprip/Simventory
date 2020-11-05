@@ -28,7 +28,7 @@ class BuildingPlan with ChangeNotifier {
   int get totalTimeTaken {
     int totalTime = 0;
     for (var item in ingredients.values) {
-      totalTime += item.time;
+      totalTime += item.time * item.count;
     }
     return totalTime;
   }
@@ -40,7 +40,7 @@ class BuildingPlan with ChangeNotifier {
       ingredients[item.name] = item;
     }
     ingredients[item.name].incrementCount();
-    _sortIngredients();
+    // _sortIngredients();
     notifyListeners();
   }
 
@@ -51,6 +51,16 @@ class BuildingPlan with ChangeNotifier {
       if (ingredients[itemName].count <= 0) ingredients.remove(itemName);
     }
     notifyListeners();
+  }
+
+  String convertedTime() {
+    int hours = totalTimeTaken ~/ 60;
+    int mins = totalTimeTaken % 60;
+    if (hours == 0) {
+      return '$mins m';
+    } else {
+      return '${totalTimeTaken ~/ 60}h ${totalTimeTaken % 60}m';
+    }
   }
 
   void changeNameTo(String newName) {

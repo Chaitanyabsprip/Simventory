@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../widgets/edit_name.dart';
 import '../widgets/app_bar.dart';
 import '../providers/building_plans_provider.dart';
 import '../providers/item_provider.dart';
@@ -14,7 +15,6 @@ class NewBuildingPlan extends StatelessWidget {
 
     final titleEditingState = Provider.of<NewBuildingPlanState>(context);
     final planProvider = Provider.of<BuildingPlan>(context);
-    final TextEditingController _controller = new TextEditingController();
 
     return Scaffold(
       appBar: AppBar(
@@ -30,6 +30,14 @@ class NewBuildingPlan extends StatelessWidget {
             },
           ),
         ),
+        // added actions with a 0 opacity widget to add an invisible box
+        // to center the title in the AppBar
+        actions: [
+          Opacity(
+            opacity: 0,
+            child: Icon(Icons.delete),
+          ),
+        ],
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -37,86 +45,24 @@ class NewBuildingPlan extends StatelessWidget {
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,
             colors: [
+              Color.lerp(Color(0xFFC4F4FF), Color(0xFFFFFFFF), 0.5),
+              Color.lerp(Color(0xFFC4F4FF), Color(0xFFFFFFFF), 0.7),
+              Color.lerp(Color(0xFFC4F4FF), Color(0xFFFFFFFF), 0.9),
               Color(0xFFFFFFFF),
-              Color(0xFFD8F6FD),
+              Color(0xFFFFFFFF),
+              Color(0xFFFFFFFF),
+              Color.lerp(Color(0xFFC4F4FF), Color(0xFFFFFFFF), 0.9),
+              Color.lerp(Color(0xFFC4F4FF), Color(0xFFFFFFFF), 0.7),
+              Color.lerp(Color(0xFFC4F4FF), Color(0xFFFFFFFF), 0.5),
             ],
+            // stops: [0.45, 1],
           ),
         ),
         child: Column(
           children: <Widget>[
             titleEditingState.editing
-                ? Container(
-                    height: 80,
-                    padding: const EdgeInsets.all(16),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Expanded(
-                          flex: 4,
-                          child: TextField(
-                            controller: _controller,
-                            toolbarOptions: ToolbarOptions(
-                                copy: true,
-                                cut: true,
-                                paste: true,
-                                selectAll: true),
-                            decoration: InputDecoration(
-                              labelText: "Name",
-                              hintText: "Add a name to your Building Plan",
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.only(
-                                    bottomLeft: Radius.circular(15),
-                                    topLeft: Radius.circular(15)),
-                                borderSide: BorderSide(
-                                  color: Colors.black,
-                                  style: BorderStyle.solid,
-                                  width: 10,
-                                ),
-                              ),
-                            ),
-                            onSubmitted: (String newName) {
-                              planProvider.changeNameTo(newName);
-                              debugPrint(
-                                  "value: $newName \n name: ${planProvider.name}");
-                              titleEditingState.edit();
-                            },
-                          ),
-                        ),
-                        Container(
-                          height: 59,
-                          width: 50,
-                          decoration: BoxDecoration(
-                            color: Color(0xFF1578B5),
-                            borderRadius: BorderRadius.only(
-                              bottomRight: Radius.circular(15.0),
-                              topRight: Radius.circular(15.0),
-                            ),
-                          ),
-                          child: FlatButton(
-                            padding: EdgeInsets.all(0),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12)),
-                            child: Icon(
-                              Icons.check,
-                              color: Colors.white,
-                            ),
-                            onPressed: () {
-                              if (_controller.value.text != '') {
-                                planProvider
-                                    .changeNameTo(_controller.value.text);
-                              } else {
-                                String newName =
-                                    "Building Plan #${planProvider.uid}";
-                                planProvider.changeNameTo(newName);
-                              }
-                              titleEditingState.edit();
-                            },
-                          ),
-                        )
-                      ],
-                    ),
-                  )
+                ? EditName(
+                    "Name", "Add a name to your Building Plan", planProvider)
                 : Container(),
             Divider(
               color: Colors.black45,
@@ -141,8 +87,12 @@ class NewBuildingPlan extends StatelessWidget {
                       duration: Duration(milliseconds: 800),
                       height: planProvider.ingredients.length == 0 ? 0.0 : 36.0,
                       child: RaisedButton(
+                        padding: EdgeInsets.all(0.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18.0),
+                        ),
                         onPressed: () {
-                          var result;
+                          BuildingPlan result;
                           result = planProvider;
                           if (planProvider.ingredients.length == 0) {
                             result = null;
@@ -150,19 +100,19 @@ class NewBuildingPlan extends StatelessWidget {
                           }
                           Navigator.pop(context, result);
                         },
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18.0)),
-                        padding: EdgeInsets.all(0.0),
                         child: Ink(
                           decoration: BoxDecoration(
                               gradient: LinearGradient(
-                                colors: [
-                                  Color(0xFFFFE4D6),
-                                  Color(0xFFFF630C),
-                                ],
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                              ),
+                                  begin: Alignment.centerLeft,
+                                  end: Alignment.centerRight,
+                                  colors: <Color>[
+                                    Color(0xFFFF630C),
+                                    Color(0xFFBA3B0C),
+                                  ],
+                                  stops: [
+                                    0.3,
+                                    1
+                                  ]),
                               borderRadius: BorderRadius.circular(18.0)),
                           child: Container(
                             constraints:
@@ -180,7 +130,7 @@ class NewBuildingPlan extends StatelessWidget {
                   )
                 ],
               ),
-            ), //Todo: could use LayoutBuilder
+            ),
             Divider(
               indent: 185,
               endIndent: 185,
@@ -188,6 +138,97 @@ class NewBuildingPlan extends StatelessWidget {
             ),
             Expanded(
               child: ListView.builder(
+                itemCount: Info.categoryNames.length,
+                itemBuilder: (BuildContext context, int i) {
+                  final List categoryNames = Info.categoryNames;
+                  return ExpansionTile(
+                    title: Text(Info.categoryNames[i]),
+                    children: List.generate(
+                        Info.getCommercialProducts(categoryNames[i]).length,
+                        (int j) {
+                      Item item = DerivedItem(
+                          Info.itemsList[categoryNames[i]].keys.toList()[j]);
+                      Widget image;
+                      try {
+                        image =
+                            Image.asset("assets/items/${item.imageName()}.png");
+                      } catch (e) {
+                        image = null;
+                      }
+                      return Container(
+                        width: MediaQuery.of(context).size.width,
+                        padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              flex: 1,
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
+                                child: CircleAvatar(
+                                  backgroundColor: Colors.transparent,
+                                  child: image,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              width: 135,
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16.0),
+                              child: Text(
+                                item.name,
+                                style: TextStyle(fontSize: 18),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 3,
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    flex: 1,
+                                    child: ChangeCount(
+                                        add: false,
+                                        function: planProvider.removeItem,
+                                        item: item),
+                                  ),
+                                  Expanded(
+                                    flex: 1,
+                                    child: Text(
+                                      (planProvider.ingredients
+                                              .containsValue(item))
+                                          ? planProvider
+                                              .ingredients[item.name].count
+                                              .toString()
+                                          : "0",
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 1,
+                                    child: ChangeCount(
+                                        add: true,
+                                        function: planProvider.addItem,
+                                        item: item),
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      );
+                    }),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/*
+ListView.builder(
                 itemCount: Info.itemList.length,
                 itemBuilder: (BuildContext context, int index) {
                   // Making an object of <Item> DerivedItems for each listView Item but adding it to ingredients list only when add button is pressed.
@@ -205,11 +246,10 @@ class NewBuildingPlan extends StatelessWidget {
                           child: Padding(
                             padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
                             child: CircleAvatar(
+                              backgroundColor: Colors.transparent,
                               child: Image.asset(
                                 "assets/items/${Info.namesList[index]}.png",
                               ),
-                              backgroundColor:
-                                  Theme.of(context).scaffoldBackgroundColor,
                             ),
                           ),
                         ),
@@ -256,11 +296,4 @@ class NewBuildingPlan extends StatelessWidget {
                     ),
                   );
                 },
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-}
+              ), */

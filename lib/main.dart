@@ -20,7 +20,7 @@ class Simventory extends StatelessWidget {
         title: 'Simventory',
         theme: ThemeData(
             primaryColor: Color.fromRGBO(1, 76, 131, 1),
-            scaffoldBackgroundColor: Color(0xFBFEFBFF),
+            scaffoldBackgroundColor: Color(0xFFFFFFFF),
             accentColor: Color(0xFF54DAF7),
             textTheme: TextTheme(
                 headline6:

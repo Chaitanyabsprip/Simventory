@@ -36,9 +36,10 @@ class Home extends StatelessWidget {
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
                 colors: <Color>[
-                  Color(0xFFFFE4D6),
                   Color(0xFFFF630C),
+                  Color(0xFFBA3B0C),
                 ],
+                stops: [0.3, 1],
               ),
             ),
             child: Icon(
@@ -79,9 +80,17 @@ class Home extends StatelessWidget {
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,
             colors: [
+              Color.lerp(Color(0xFFC4F4FF), Color(0xFFFFFFFF), 0.5),
+              Color.lerp(Color(0xFFC4F4FF), Color(0xFFFFFFFF), 0.7),
+              Color.lerp(Color(0xFFC4F4FF), Color(0xFFFFFFFF), 0.9),
               Color(0xFFFFFFFF),
-              Color(0xFFC4F4FF),
+              Color(0xFFFFFFFF),
+              Color(0xFFFFFFFF),
+              Color.lerp(Color(0xFFC4F4FF), Color(0xFFFFFFFF), 0.9),
+              Color.lerp(Color(0xFFC4F4FF), Color(0xFFFFFFFF), 0.7),
+              Color.lerp(Color(0xFFC4F4FF), Color(0xFFFFFFFF), 0.5),
             ],
+            // stops: [0.45, 1],
           ),
         ),
         child: !planExists ? DefaulWidget() : Book(),
@@ -125,7 +134,7 @@ class Book extends StatelessWidget {
           child: ExpansionTile(
             tilePadding: const EdgeInsets.only(right: 8.0),
             subtitle: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -134,20 +143,17 @@ class Book extends StatelessWidget {
                     style: TextStyle(color: Colors.black54),
                   ),
                   Text(
-                    'Total Time: ${plan.totalTimeTaken}',
+                    'Total Time: ${plan.convertedTime()}',
                     style: TextStyle(color: Colors.black54),
                   )
                 ],
               ),
             ),
             children: [
-              Hero(
-                tag: plan.name,
-                child: AddedItems(
-                  plan: plan,
-                  allowEdit: false,
-                  oneRow: true,
-                ),
+              AddedItems(
+                plan: plan,
+                allowEdit: false,
+                oneRow: true,
               ),
             ],
             onExpansionChanged: (value) {
@@ -158,8 +164,11 @@ class Book extends StatelessWidget {
                 bool isDeleted = await Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => PlanDescription(
-                      plan,
+                    builder: (context) => ChangeNotifierProvider(
+                      create: (context) => NewBuildingPlanState(),
+                      child: PlanDescription(
+                        plan,
+                      ),
                     ),
                   ),
                 );

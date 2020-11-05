@@ -1,76 +1,6 @@
 import 'package:flutter/material.dart';
 import '../providers/building_plans_provider.dart';
 
-/* class ItemList extends StatelessWidget {
-  final BuildingPlan plan;
-  final bool allowEdit;
-
-  ItemList({@required this.plan, @required this.allowEdit});
-
-  @override
-  Widget build(BuildContext context) {
-    List items = List<Widget>.generate(
-      plan.ingredients.length,
-      (index) => Container(
-        width: 110,
-        // padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Expanded(
-              flex: 1,
-              child: CircleAvatar(
-                child: Image.asset(
-                    "assets/items/${plan.ingredients.keys.toList()[index]}.png"),
-                backgroundColor: Theme.of(context).bottomAppBarColor,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                plan.ingredients.values.toList()[index].count.toString(),
-                style: TextStyle(fontSize: 18),
-              ),
-            ),
-            allowEdit
-                ? Container(
-                    width: 28.0,
-                    height: 28.0,
-                    alignment: Alignment(0, 0),
-                    clipBehavior: Clip.hardEdge,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(14),
-                      color: Colors.red[50],
-                    ),
-                    child: IconButton(
-                      padding: EdgeInsets.all(0),
-                      icon: Icon(
-                        Icons.clear,
-                        color: Colors.red,
-                      ),
-                      onPressed: () {
-                        plan.ingredients.values.toList()[index].count = 0;
-                        plan.removeItem(plan.ingredients.keys.toList()[index]);
-                      },
-                    ),
-                  )
-                : Text(""),
-          ],
-        ),
-      ),
-    );
-    return AnimatedContainer(
-      duration: Duration(milliseconds: 500),
-      height: 48.0 * ((items.length / 3).ceil()),
-      child: Wrap(
-          alignment: WrapAlignment.start,
-          spacing: 8.0,
-          direction: Axis.horizontal,
-          children: items),
-    );
-  }
-} */
-
 class AddedItems extends StatelessWidget {
   AddedItems({
     @required this.plan,
@@ -91,14 +21,15 @@ class AddedItems extends StatelessWidget {
         List.generate(plan.ingredients.length, (index) {
       final item = plan.ingredients.values.toList()[index];
       return Container(
+        margin: oneRow ? const EdgeInsets.symmetric(horizontal: 4) : null,
         width: allowEdit ? radius * 5.1 : radius * 3.5,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             CircleAvatar(
               radius: radius,
-              child: Image.asset('assets/items/${item.name}.png'),
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              child: Image.asset('assets/items/${item.imageName()}.png'),
+              backgroundColor: Colors.transparent,
             ),
             Expanded(
               child: Text(
@@ -116,7 +47,7 @@ class AddedItems extends StatelessWidget {
                       clipBehavior: Clip.hardEdge,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(14),
-                        color: Colors.red[50],
+                        color: Color(0x09FF0000),
                       ),
                       child: IconButton(
                         padding: EdgeInsets.all(0),
