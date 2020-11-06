@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/building_plans_provider.dart';
-import '../providers/new_building_plan_state_provider.dart';
+import 'package:simventory/providers/home_screen_state_providers.dart';
+import '../providers/plan_descriptions_state_providers.dart';
+import '../data/building_plans.dart';
+import '../providers/new_building_plan_state_providers.dart';
 import '../screens/new_building_plan.dart';
-import '../screens/plan_description.dart';
+import 'description.dart';
 import '../widgets/added_items.dart';
 import '../widgets/app_bar.dart';
 
@@ -14,7 +16,7 @@ class Home extends StatelessWidget {
 
     final buildingPlansProvider = Provider.of<BuildingPlanBook>(context);
     final bool planExists = buildingPlansProvider.book.length != 0;
-
+    final state = Provider.of<HomeScreenState>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         flexibleSpace: GradientAppBar(),
@@ -75,24 +77,7 @@ class Home extends StatelessWidget {
         ),
       ),
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.centerLeft,
-            end: Alignment.centerRight,
-            colors: [
-              Color.lerp(Color(0xFFC4F4FF), Color(0xFFFFFFFF), 0.5),
-              Color.lerp(Color(0xFFC4F4FF), Color(0xFFFFFFFF), 0.7),
-              Color.lerp(Color(0xFFC4F4FF), Color(0xFFFFFFFF), 0.9),
-              Color(0xFFFFFFFF),
-              Color(0xFFFFFFFF),
-              Color(0xFFFFFFFF),
-              Color.lerp(Color(0xFFC4F4FF), Color(0xFFFFFFFF), 0.9),
-              Color.lerp(Color(0xFFC4F4FF), Color(0xFFFFFFFF), 0.7),
-              Color.lerp(Color(0xFFC4F4FF), Color(0xFFFFFFFF), 0.5),
-            ],
-            // stops: [0.45, 1],
-          ),
-        ),
+        decoration: state.backgroundGradient,
         child: !planExists ? DefaulWidget() : Book(),
       ),
     );
@@ -120,72 +105,85 @@ class Book extends StatelessWidget {
   Widget build(BuildContext context) {
     final buildingPlansProvider = Provider.of<BuildingPlanBook>(context);
     return ListView.builder(
+      padding: const EdgeInsets.all(8.0),
       itemCount: buildingPlansProvider.book.entries.length,
       itemBuilder: (BuildContext context, int index) {
-        final plan = buildingPlansProvider.book.values.toList()[index];
-        bool isExpanded = false;
-        return Card(
-          elevation: 3,
-          color: Color(0xFCFEFCFF),
-          margin: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.0),
-          ),
-          child: ExpansionTile(
-            tilePadding: const EdgeInsets.only(right: 8.0),
-            subtitle: Padding(
-              padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Number of Items: ${plan.numberOfItems.toString()}',
-                    style: TextStyle(color: Colors.black54),
-                  ),
-                  Text(
-                    'Total Time: ${plan.convertedTime()}',
-                    style: TextStyle(color: Colors.black54),
-                  )
-                ],
-              ),
+        return PlanInfo(index);
+      },
+    );
+  }
+}
+
+class PlanInfo extends StatelessWidget {
+  PlanInfo(this.index);
+  final int index;
+  @override
+  Widget build(BuildContext context) {
+    final buildingPlansProvider = Provider.of<BuildingPlanBook>(context);
+    final plan = buildingPlansProvider.book.values.toList()[index];
+    bool isExpanded = false;
+
+    return Card(
+      elevation: 3,
+      margin: EdgeInsets.symmetric(vertical: 4.0),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      child: ExpansionTile(
+        subtitle: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Number of Items: ${plan.numberOfItems.toString()}',
+              style: TextStyle(color: Colors.black54),
             ),
-            children: [
-              AddedItems(
-                plan: plan,
-                allowEdit: false,
-                oneRow: true,
-              ),
-            ],
-            onExpansionChanged: (value) {
-              isExpanded = !isExpanded;
-            },
-            title: FlatButton(
-              onPressed: () async {
-                bool isDeleted = await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ChangeNotifierProvider(
+            Text(
+              'Total Time: ${plan.convertedTime()}',
+              style: TextStyle(color: Colors.black54),
+            )
+          ],
+        ),
+        children: [
+          AddedItems(
+            plan: plan,
+            allowEdit: false,
+            oneRow: true,
+          ),
+        ],
+        onExpansionChanged: (value) {
+          isExpanded = !isExpanded;
+        },
+        title: FlatButton(
+          padding: EdgeInsets.all(0.0),
+          onPressed: () async {
+            bool isDeleted = await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MultiProvider(
+                  providers: [
+                    ChangeNotifierProvider(
                       create: (context) => NewBuildingPlanState(),
-                      child: PlanDescription(
-                        plan,
-                      ),
                     ),
-                  ),
-                );
-                isDeleted ??= false;
-                if (isDeleted) buildingPlansProvider.removePlan(plan.name);
-              },
-              child: Container(
-                width: double.infinity,
-                child: Text(
-                  buildingPlansProvider.book.values.toList()[index].name,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
+                    ChangeNotifierProvider(
+                      create: (context) => PlanDescriptionState(plan.name),
+                    ),
+                  ],
+                  child: PlanDescription(),
                 ),
               ),
+            );
+            isDeleted ??= false;
+            if (isDeleted) buildingPlansProvider.removePlan(plan.name);
+          },
+          child: Container(
+            width: double.infinity,
+            child: Text(
+              buildingPlansProvider.book.values.toList()[index].name,
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
             ),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }

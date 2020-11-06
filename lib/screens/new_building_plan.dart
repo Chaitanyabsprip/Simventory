@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../widgets/edit_name.dart';
 import '../widgets/app_bar.dart';
-import '../providers/building_plans_provider.dart';
-import '../providers/item_provider.dart';
-import '../providers/new_building_plan_state_provider.dart';
+import '../data/building_plans.dart';
+import '../data/items.dart';
+import '../providers/new_building_plan_state_providers.dart';
 import '../widgets/added_items.dart';
 import '../widgets/change_item_count_button.dart';
 
@@ -62,7 +62,9 @@ class NewBuildingPlan extends StatelessWidget {
           children: <Widget>[
             titleEditingState.editing
                 ? EditName(
-                    "Name", "Add a name to your Building Plan", planProvider)
+                    labelText: "Name",
+                    hintText: "Add a name to your Building Plan",
+                    plan: planProvider)
                 : Container(),
             Divider(
               color: Colors.black45,
@@ -148,13 +150,6 @@ class NewBuildingPlan extends StatelessWidget {
                         (int j) {
                       Item item = DerivedItem(
                           Info.itemsList[categoryNames[i]].keys.toList()[j]);
-                      Widget image;
-                      try {
-                        image =
-                            Image.asset("assets/items/${item.imageName()}.png");
-                      } catch (e) {
-                        image = null;
-                      }
                       return Container(
                         width: MediaQuery.of(context).size.width,
                         padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
@@ -166,7 +161,8 @@ class NewBuildingPlan extends StatelessWidget {
                                 padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
                                 child: CircleAvatar(
                                   backgroundColor: Colors.transparent,
-                                  child: image,
+                                  child: Image.asset(
+                                      "assets/items/${item.imageName()}.png"),
                                 ),
                               ),
                             ),

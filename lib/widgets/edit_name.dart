@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:simventory/providers/building_plans_provider.dart';
-import '../providers/new_building_plan_state_provider.dart';
+import 'package:simventory/data/building_plans.dart';
+import '../providers/new_building_plan_state_providers.dart';
 
 class EditName extends StatelessWidget {
-  EditName(this.labelText, this.hintText, this.plan);
+  EditName({this.labelText, this.hintText, this.plan});
 
   final String labelText;
   final BuildingPlan plan;
@@ -67,12 +67,13 @@ class EditName extends StatelessWidget {
                 color: Colors.white,
               ),
               onPressed: () {
+                String newName;
                 if (_controller.value.text != '') {
-                  plan.changeNameTo(_controller.value.text);
+                  newName = _controller.value.text;
                 } else {
-                  String newName = "Building Plan #${plan.uid}";
-                  plan.changeNameTo(newName);
+                  newName = "Building Plan #${plan.uid}";
                 }
+                plan.changeNameTo(newName);
                 titleEditingState.edit();
               },
             ),

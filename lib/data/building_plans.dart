@@ -1,5 +1,5 @@
 import 'package:flutter/Material.dart';
-import 'item_provider.dart';
+import 'items.dart';
 
 class BuildingPlan with ChangeNotifier {
   BuildingPlan() {
@@ -31,6 +31,12 @@ class BuildingPlan with ChangeNotifier {
       totalTime += item.time * item.count;
     }
     return totalTime;
+  }
+
+  Map<String, Item> get derivedItems {
+    Map<String, DerivedItem> derivedItems = Map.from(ingredients);
+    derivedItems.removeWhere((key, value) => !value.isBasic);
+    return derivedItems;
   }
 
   //methods
@@ -69,16 +75,16 @@ class BuildingPlan with ChangeNotifier {
   }
 
   void _sortIngredients() {
-    Map<int, Item> timeToItem = {};
+    //! change implementation
+    Map<String, Item> nameToItem = {};
     List<int> sortedList;
     Map<String, Item> temp = {};
     for (var item in ingredients.values) {
-      timeToItem[item.time] = item;
+      nameToItem[item.name] = item;
     }
-    sortedList = timeToItem.keys.toList();
     sortedList.sort();
     for (var i in sortedList) {
-      temp[timeToItem[i].name] = ingredients[timeToItem[i].name];
+      temp[nameToItem[i].name] = ingredients[nameToItem[i].name];
     }
     ingredients = temp;
   }

@@ -255,14 +255,11 @@ class Item {
   //fields
 
   String name;
-  int count = 0;
+  int count;
 
   //constructors
 
-  Item();
-
-  Item.add(String name) {
-    this.name = name;
+  Item(this.name) : assert(name != null) {
     this.count = 0;
   }
 
@@ -295,13 +292,17 @@ class Item {
 }
 
 class DerivedItem extends Item with ChangeNotifier {
-  // ignore: unused_field
-  Map<String, int> _materialsRequired = {};
+  Map<String, int> _materialsRequired;
+  bool isBasic = true;
 
-  DerivedItem(String name) {
-    super.name = name;
+  DerivedItem(String name)
+      : assert(name != null),
+        super(name) {
     super.count = 0;
     this._materialsRequired = Info.getAllItems()[name]["materials required"];
+    this._materialsRequired == null
+        ? this.isBasic = false
+        : this.isBasic = true;
   }
 
   int get time => Info.getAllItems()[name]["time"];
