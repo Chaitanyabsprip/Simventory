@@ -81,7 +81,10 @@ class NewBuildingPlan extends StatelessWidget {
                       : 50.0 * ((planProvider.ingredients.length / 3).ceil())),
               child: Stack(
                 children: [
-                  ShowItems(plan: planProvider),
+                  ShowItems(
+                    plan: planProvider,
+                    allowEdit: true,
+                  ),
                   Positioned(
                     bottom: 8.0,
                     right: 24.0,

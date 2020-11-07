@@ -6,19 +6,23 @@ import '../providers/building_plans.dart';
 class ShowItems extends StatelessWidget {
   //contructor
 
-  ShowItems({@required this.plan}) : assert(plan != null);
+  ShowItems(
+      {@required this.plan,
+      this.allowEdit = false,
+      this.oneRow = false,
+      this.radius = 18})
+      : assert(plan != null);
 
   //fields
 
   final plan;
-
+  final bool allowEdit;
+  final bool oneRow;
+  final double radius;
   //methods
 
   @override
   Widget build(BuildContext context) {
-    bool allowEdit = false;
-    bool oneRow = false;
-    double radius = 18;
     int length = plan.ingredients.length;
 
     return AnimatedContainer(

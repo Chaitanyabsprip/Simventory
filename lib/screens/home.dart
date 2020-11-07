@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:simventory/providers/home_screen_state_providers.dart';
+import '../widgets/gradients.dart';
 import '../providers/plan_descriptions_state_providers.dart';
-import '../data/building_plans.dart';
+import '../providers/building_plans.dart';
 import '../providers/new_building_plan_state_providers.dart';
 import '../screens/new_building_plan.dart';
-import 'description.dart';
 import '../widgets/added_items.dart';
 import '../widgets/app_bar.dart';
+import 'description.dart';
 
 class Home extends StatelessWidget {
   @override
@@ -16,7 +16,6 @@ class Home extends StatelessWidget {
 
     final buildingPlansProvider = Provider.of<BuildingPlanBook>(context);
     final bool planExists = buildingPlansProvider.book.length != 0;
-    final state = Provider.of<HomeScreenState>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         flexibleSpace: GradientAppBar(),
@@ -77,7 +76,7 @@ class Home extends StatelessWidget {
         ),
       ),
       body: Container(
-        decoration: state.backgroundGradient,
+        decoration: BackgroundGradient(BackgroundGradient.linearGradient()),
         child: !planExists ? DefaulWidget() : Book(),
       ),
     );
@@ -144,9 +143,8 @@ class PlanInfo extends StatelessWidget {
           ],
         ),
         children: [
-          AddedItems(
+          ShowItems(
             plan: plan,
-            allowEdit: false,
             oneRow: true,
           ),
         ],
@@ -165,10 +163,16 @@ class PlanInfo extends StatelessWidget {
                       create: (context) => NewBuildingPlanState(),
                     ),
                     ChangeNotifierProvider(
-                      create: (context) => PlanDescriptionState(plan.name),
+                      create: (context) => PlanDescriptionState(),
                     ),
                   ],
-                  child: PlanDescription(),
+                  child: PlanDescription(
+                    plan: plan ??
+                        Provider.of<BuildingPlanBook>(context)
+                            .book
+                            .values
+                            .toList()[index],
+                  ),
                 ),
               ),
             );

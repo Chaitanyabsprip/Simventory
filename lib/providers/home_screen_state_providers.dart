@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:simventory/widgets/gradients.dart';
-// import '../data/building_plans.dart';
+import '../widgets/gradients.dart';
+import 'building_plans.dart';
 
 class HomeScreenState with ChangeNotifier {
   BackgroundGradient backgroundGradient =
       BackgroundGradient(BackgroundGradient.linearGradient());
+
+  var plan;
 }
