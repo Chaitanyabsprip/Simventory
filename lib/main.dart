@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:simventory/providers/home_screen_state_providers.dart';
-import 'data/building_plans.dart';
+import 'providers/home_screen_state_providers.dart';
+import 'providers/building_plans.dart';
 import 'screens/home.dart';
 
 void main() {

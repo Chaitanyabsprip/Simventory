@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:simventory/data/building_plans.dart';
+import '../providers/building_plans.dart';
 import '../providers/new_building_plan_state_providers.dart';
 
 class EditName extends StatelessWidget {

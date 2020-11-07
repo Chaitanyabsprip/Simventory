@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../widgets/edit_name.dart';
 import '../widgets/app_bar.dart';
-import '../data/building_plans.dart';
-import '../data/items.dart';
+import '../providers/building_plans.dart';
+import '../providers/items.dart';
 import '../providers/new_building_plan_state_providers.dart';
 import '../widgets/added_items.dart';
 import '../widgets/change_item_count_button.dart';
@@ -15,6 +15,7 @@ class NewBuildingPlan extends StatelessWidget {
 
     final titleEditingState = Provider.of<NewBuildingPlanState>(context);
     final planProvider = Provider.of<BuildingPlan>(context);
+    titleEditingState.plan = planProvider;
 
     return Scaffold(
       appBar: AppBar(
@@ -80,7 +81,7 @@ class NewBuildingPlan extends StatelessWidget {
                       : 50.0 * ((planProvider.ingredients.length / 3).ceil())),
               child: Stack(
                 children: [
-                  AddedItems(allowEdit: true, plan: planProvider),
+                  ShowItems(plan: planProvider),
                   Positioned(
                     bottom: 8.0,
                     right: 24.0,
@@ -222,74 +223,3 @@ class NewBuildingPlan extends StatelessWidget {
     );
   }
 }
-
-/*
-ListView.builder(
-                itemCount: Info.itemList.length,
-                itemBuilder: (BuildContext context, int index) {
-                  // Making an object of <Item> DerivedItems for each listView Item but adding it to ingredients list only when add button is pressed.
-
-                  Item item = new DerivedItem(Info.namesList[index]);
-                  String itemName = Info.namesList[index];
-
-                  return Container(
-                    width: MediaQuery.of(context).size.width,
-                    padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
-                            child: CircleAvatar(
-                              backgroundColor: Colors.transparent,
-                              child: Image.asset(
-                                "assets/items/${Info.namesList[index]}.png",
-                              ),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          width: 135,
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: Text(
-                            item.name,
-                            style: TextStyle(fontSize: 18),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 3,
-                          child: Row(
-                            children: [
-                              Expanded(
-                                flex: 1,
-                                child: ChangeCount(
-                                    add: false,
-                                    function: planProvider.removeItem,
-                                    item: item),
-                              ),
-                              Expanded(
-                                flex: 1,
-                                child: Text(
-                                  (planProvider.ingredients.containsValue(item))
-                                      ? planProvider.ingredients[itemName].count
-                                          .toString()
-                                      : "0",
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                              Expanded(
-                                flex: 1,
-                                child: ChangeCount(
-                                    add: true,
-                                    function: planProvider.addItem,
-                                    item: item),
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  );
-                },
-              ), */
